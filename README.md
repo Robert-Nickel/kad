@@ -1,4 +1,4 @@
-# NoSQL - Einführung
+# 1 NoSQL - Einführung
 
 ## Motivation
 neue Anforderungen aufgrund exponentiell wachsendes Datenaufkommen
@@ -73,7 +73,7 @@ Byzantinische Fehlerkorrektur (1453 n.Chr.)
 - Kommunikation zw. Generälen mittels Boten
 - Generäle teilweise loyal und teilweise intrigant
 - Mehr als 2/3 der Generäle müssen loyal sein, damit Mehrheitsentscheid richtig und Belagerung funktioniert
-Schlussfolgerung: Wenn 1 von 3 DB Servers kompromitiert sind, hat man schon ein Problem
+- Schlussfolgerung: Wenn 1 von 3 DB Servern kompromittiert sind, hat man schon ein Problem
 
 ## Merkmale und Programmierkonzepte
 
