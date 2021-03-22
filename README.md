@@ -236,5 +236,60 @@ NoSQL
   - Graphenorientierte DB-Systeme
     - Graph ist rechenintensives Speicherobjekt in RDBMS
     - Z.B. für Freundschaften in sozialen Netzwerken oder Empfehlungsengines
-    - Beispiele: Neo4J, FlockDB
+    - Beispiele: Neo4j, FlockDB
+    - Knoten und Kanten können Key-Value-Paare haben
   - Spaltenorientierte DB-Systeme
+  - Time-Series-Databases
+    - Optimiert für chronologische Abspeicherung z.B. von Sensordaten
+    - Wie Logbuch
+    - Oft Append-only Funktionen (kein Löschen)
+  - Multi-Modell NoSQL Systeme
+    - versch. NoSQL Systemklassen "unter einem Dach"
+    - z.B. OrientDB, ArrangoDB, Couchbase, FoundationDB
+  - NewSQL Systeme
+    - NoSQL System mit SQL-ähnlicher Abfragesprache
+    - z.B. VoltDB, Google Spanner
+  - Cloud DB-Systeme
+    - z.B. DynamoDB, Azure Tables
+  - Search Engines
+    - z.B. Solr, ElasticSearch
+  - Triple Stores
+    - Bestehen aus Triples, z.B. Subjekt, Prädikat, Objekt
+
+&rarr; Auswahl der __richtigen__ NoSQL Lösung für das Problem
+
+Kriterien für Auswahl
+- Daten
+  - Datenart (kritisch, temporär, ...)
+  - Datenmodell (relational, spaltenorientiert, dokumentenorientiert, ...)
+  - Datenmenge
+- Transaktionsmodell
+  - ACID/BASE
+  - CAP-Abwägung
+- Performanz und Latenzen
+- Abfrageanforderungen
+  - SQL ist mächtiger als MapReduce (mehr möglich)
+- Architektur
+  - Verteilung
+  - Replikation
+
+### Polyglot Persistence
+- [Artikel von Martin Fowler](https://martinfowler.com/bliki/PolyglotPersistence.html)
+- Teilsysteme persistieren Daten entsprechend ihrer Bedürfnisse, mehrere verschiedene Datenbankmodelle werden für Gesamtsystem verwendet
+- Object-NoSQL-Mapper zur Vereinfachung der Entwicklung
+  - Standardisierte Persistenz-APIs wie JPA
+  - Hohes Abstraktionsniveau setzt manche DBS-Vorteile außer Kraft
+- Microservices zur Kapselung von Persistenzentscheidungen
+- Trade-off zw. erhöhter Komplexität für Entwicklung und Wartung ggü. besserer Speicherung
+
+| Anwendungsfall                                                                                    | NoSQL-DB                                                 |
+| ------------------------------------------------------------------------------------------------- | -------------------------------------------------------- |
+| Viele Beziehungen, Graphstruktur                                                                  | Neo4j, Sones, ...                                        |
+| Individuelle Replikation, Offline- oder mobiler Einsatz                                           | CouchDB                                                  |
+| Viele große unstrukt. Daten                                                                       | Amazon S3, Hadoop                                        |
+| Sehr viele strukturierte Daten                                                                    | Hbase, Amazon Simple DB, Google - und MS Azure Datastore |
+| Hochverfügbare Systeme                                                                            | Cassandra, Riak, Membase                                 |
+| Unzusammenhängende Daten, statistische Daten, mehr writes als reads, hohe Performance per Instanz | Redis, MongoDB                                           |
+| Flüchtige Daten                                                                                   | memcache und dessen Derivate                             |
+
+&rarr; alles stark im Fluss, keine finale Aussage möglich
