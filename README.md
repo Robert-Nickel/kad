@@ -17,7 +17,7 @@ Beschränkungen rel. DBMS
 - Impedance Mismatch zwischen Anwendungsdaten und persistenten Daten: Unterschiedliche Datenformate in DB und Anwendungen, mapping nötig
 
 Definition: Big Data
-- "Big data is a collection of data sets so large and complex that it becomes difficult to process using on-hand database management tools or traditional data processing applications." // TODO link?
+- "Big Data bezeichnet Datenmengen, welche beispielsweise zu groß, zu komplex, zu schnelllebig oder zu schwach strukturiert sind, um sie mit manuellen und herkömmlichen Methoden der Datenverarbeitung auszuwerten." - [Wikipedia](https://de.wikipedia.org/wiki/Big_Data)
 - Vorkommen z.B. in soz. Netzwerken, Sensordaten, Forschungsdaten
 - Charakterisierung durch 4 V's
   - Volume (Menge an Daten)
@@ -51,8 +51,19 @@ Klassifizierung innovativer DBs
 - von Eric Brewster
 - verteiltes System kann 2 der 3 Eigenschaften erfüllen
   - Consistency: Jede Operation nach außen hin atomar
-  - Availability: Ergebnis steht innerhalb akz. Antwortzeit zur Verfügung
+  - Availability: Ergebnis steht innerhalb akz. Antwortzeit zur Verfügung (Amazon: 0,1 Sekunden Antwortzeit = 1% Sale)
   - Partition Tolerance: Ausfall eines Knotens führt nicht zum Ausfall des Gesamtsystems
+
+![](https://www.rcvacademy.com/wp-content/uploads/2017/09/CAP-theorem.png)
+
+Bankautomat könnte CP sein, oder AP mit Höchstbetrag, den man abheben kann
+
+Erklärung:  
+&emsp;&emsp;&emsp;&emsp;&emsp;v1  
+&emsp;&emsp;&emsp;&emsp;&emsp;&darr;  
+A(v0) &rarr; A(v1) &rarr; A(v1) &rarr; A(v1)
+&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&darr; v1 fail   
+B(v0) &rarr; B(v0) &rarr; B(v0) &rarr; B(v0)
 
 Fehlertoleranz
 - Fehlfunktion: Teil des Systems verhält sich unerwartet
@@ -76,5 +87,154 @@ Byzantinische Fehlerkorrektur (1453 n.Chr.)
 - Schlussfolgerung: Wenn 1 von 3 DB Servern kompromittiert sind, hat man schon ein Problem
 
 ## Merkmale und Programmierkonzepte
+Schnittstelle häufig [REST](https://de.wikipedia.org/wiki/Representational_State_Transfer) (REpresentatonal State Transfer)
+
+### ACID / BASE
+In relationalen Datenbanken sind Transaktionen ACID:
+- Atomicity
+- Consistency
+- Isolation
+- Durability
+
+BASE ist Auflockerung von ACID für höhere Verfügbarkeit:
+- Basically Available (höhere Verfügbarkeit)
+- Soft State (teilweise Updates möglich)
+- Eventual Consistent (schlussendlich Konsistent, zwischenzeitliche Inkonsistenz möglich, keine strikte Datenkonsistenz, Verzug meistens kaum spürbar)
+
+Konsistenzmodelle in BASE
+- Causal Consistency: Abhängigkeiten zw. Operationen werden berücksichtigt
+- Read-your-write Consistency: Spezialfall der Causal Consistency, bei jeden Zugriff erhält man keine ältere Version als durch die eigenen Schreibzugriffe definiert
+- Session Consistency: Read-your-write innerhalb einer Session
+- Monotonic-Read-Consistency: Wenn ein Prozess einen bestimmten Wert liest, wird er in jedem darauffolgenden Lesezugriff keine ältere Version erhalten.
+- Monotonic-Write-Consistency: Serialisierung aller Schreibprozesse des selben Prozesses
+
+Skalierung einer Datenbank durch Datenbankfragmentierung
+
+Horizontale Skalierung:
+- Elemente werden in disjunkte Mengen aufgeteilt und auf verschiedenen Servern gespeichert
+- SQL UNION um alle Ergebnisse zu kriegen
+
+Vertikale Skalierung:
+- Elemente werden "zerschnitten", und einige Attribute werden auf anderen Servern gespeichert als andere
+- SQL JOIN um Gesamtergebnis zu kriegen
+
+Kombinierte Verfahren denkbar
+
+### Sharding
+- Oft von NoSQL DBs genutzt
+- Methode zur Partitionierung von Daten
+- Eigene Serverinstanz für jede Partition
+- Jeder Knoten kann Aufgabe eigenständig bearbeiten und enthält Kopie aller wesentlichen Daten
+- Vermeidung von Cross-Shared Joins durch Replikation von globalen Tabellen
+- Meist horizontale Fragmentierung geordnet nach Shard-Key (das Attribut, nach dem aufgeteilt wird)
+- Hinzufügen von Servern ohne Downtime möglich
+- Partitionsstrategie: Wie teilt man die Daten auf?
+  - Identifikation von transaktions-intensiven Tabellen
+  - Aufteilung durch Shard-Key
+  - Erstellung table hierarchy und key distribution
+    - Primary Shard Tables
+    - Shard Child Tables
+    - Global Tables
+- Nachteil: Zugriff über andere als Aufteilungskriterien sehr aufwendig, da Anfragen an alle Server gehen
+
+
+Beispiel:
+
+---
+
+Kunden(Name, Wohnort, Land)  
+&darr; bestellt &darr;  
+Bestellung(Datum)  
+&darr; enthält &darr;  
+Bestellposition(Menge)  
+&darr; beinhaltet &darr;  
+Buch(Titel, Autor)  
+&uarr; gibt heraus &uarr;  
+Verlag(Name)  
+
+---
+- Shard Key: Land, aus dem der Kunde kommt (Lokalitätsprinzip: DB-Server könnte dann auch im entsprechenden Land stehen)
+- Primary Shard Table: Kunde
+- Shard Child Table: Bestellung und Bestellposition
+- Global Tables: Buch und Verlag, muss auf jedem Server (redundant) gespeichert werden
+- Alternative: Gleichmäßige Verteilung mittels hash key, verletzt Lokalitätsprinzip
+
+### MapReduce
+- Framework zur parallelen Berechnung über große Datenmengen
+- Gut in Kombination mit Sharding
+- [MapReduce auf Wikipedia](https://de.wikipedia.org/wiki/MapReduce#Illustration_des_Datenflusses)
+- Eingeführt von Google
+- Basiert auf map und reduce aus funktionaler Programmierung
+  - map: Berechnung "kleiner" Zwischenergebnisse
+  - reduce: Gruppierung der Keys/ Aggregierung der Zwischenergebnisse
+  - shuffle: Berechnung des Gesamtergebnis
+- Hello world des MapReduce ist Wörter zählen
+
+### Schemalosigkeit
+- Unterstützung agiler Entwicklung (Continious Integration, Continious Delivery)
+- Probleme:
+  - Geringe Datenqualität -> Austausch der Daten erschwert
+  - Evolutionsfähigkeit ist ein Problem
+- Daten: Ansammlung von Zeichen mit entspr. Syntax
+- Information: Kopplung von Daten mit Bedeutung
+- Wissen: Kopplung von Information mit Fähigkeit, diese zu nutzen
+- Metadaten: Daten über Daten
+- Schema: Metadaten über die Struktur, Beziehungen zw. den Daten, implizite Aussage über die Semantik der Daten
+- Ohne Schema:
+  - Korrektheit kann nicht überprüft werden
+  - Anfragen können nur schwer formuliert werden
+  - Informationen und wissen können schwerer abgeleitet werden
+- JSON & XML
+  - schreiben Attributnamen immer dazu
+  - keine Semantik
+  - Sinnhaftigkeit nicht definierbar
+  - Keine Einschränkung für Attributwerte möglich
+- Datenqualität
+  - Bedeutung von Daten als "new oil" (4. Produktionsfaktor neben Kapital, Arbeit, Rohstoffe)
+  - Datenqualität = Eignung der Daten für jew. Anwendung
+  - schlechte Qualität = Daten enthalten Fehler, Dubletten, Widersprüche
+  - Folge schlechter Qualität: Fehlentscheidungen und verpasste Chancen &rarr; weitreichend!
+- Datenmigration: Übertragung von Altdaten in neues Schema mittels Migrationsprogramm, sehr aufwendig
+- Evolution schemaloser Daten:
+  - Versionenpluralismus: Man behält die alte Struktur bei, während man eine neue hinzufügt, die Anwendung muss dann mit beiden Arten umgehen können
+  - Eager Migration: Alle Daten werden "auf einen Schlag" auf die neue Version migriert
+  - Lazy Migration: Datensätze werden nur bei Bedarf (i.e. Abfrage) migriert, unbenutzte Daten bleiben unberührt
+
+Wissen  
+&emsp;&uarr;  
+Kombination/Zweck  
+&emsp;&uarr;  
+Information  
+&emsp;&uarr;  
+Kontext/Semantik  
+&emsp;&uarr;  
+Daten  
 
 ## Klassifizierung
+NoSQL
+- Not only SQL (nicht 'kein', aber manchmal garnicht so falsch)
+- Gruppe nichtkonventioneller DB-Systeme (nicht immer einheitlich, sehr unterschiedliche Technologien)
+- Häufige Merkmale
+  - BASE statt ACID
+  - REST Schnittstelle
+  - Horizontale Skalierung (mittels Sharding)
+  - Schemafreiheit
+- Klassifizierung
+  - Key-Value-Stores
+    - teilweise schon alt
+    - Einem Schlüssel wird ein Wert zugeordnet
+    - In-memory und On-disk Datenbanken
+    - einfache Befehle z.B. put, get und delete
+    - Beispiele: DynamoDB, BigTable, Dynomite, Redis, Membase (In-memory, gut für Caching), Riak (mit buckets und link walking)
+    - Anwendung: Einkaufswagen, Sessionmanagement
+  - Dokumentenorientiere DB-Systeme
+    - Speicherung von Daten in Schemalosen Dokumenten
+    - Dokument besteht aus mehreren Key-Value Zuordnungen
+    - Beispiel: MongoDB, CouchDB
+    - Häufig für MapReduce
+    - Gut für größere Texte (z.B. Blogs)
+  - Graphenorientierte DB-Systeme
+    - Graph ist rechenintensives Speicherobjekt in RDBMS
+    - Z.B. für Freundschaften in sozialen Netzwerken oder Empfehlungsengines
+    - Beispiele: Neo4J, FlockDB
+  - Spaltenorientierte DB-Systeme
