@@ -738,9 +738,120 @@ db.orders.mapReduce(
 - $sort
 
 ## Replica Sets
+Ziele
+- Redundanz (Sicherheit, dass die Daten noch da sind)
+- Verfügbarkeit (Immer ein Server ansprechbar)
+- Erhöhung Lesekapazität (Lesegeschwindigkeit erhöhen)
 
+Primary Node
+- Erhält alle Schreibzugriffe
+- Änderungen werden in einem operation log (oplog) protokolliert
+
+Secondary Node
+- Replizieren oplog des Primary Nodes und Anwendung aller Änderung
+- Falls Primary Node ausfällt, wählen die Secondary Nodes einen neuen Primary Node
+- Lesevorgang: Änderungen können je nach mode auch von Secondary Nodes gelesen werden
+
+![](/images/mongo2.png)
+
+Lesevorgang bei Replica Sets
+- Verwendung von Read Preference Modes
+  - Primary
+    - Lesen beim Primary Node
+    - Falls dieser nicht verfügbar: Fehler
+  - PrimaryPreferred
+    - Lesen beim Primary Node
+    - Falls dieser nicht verfügbar: Lesen bei Secondary Node
+    - maxStalenessSeconds Option: maximale Verzögerung bei Lesen, wenn Verzägerung diesen Wert überschreitet, wird Client nicht mehr verwendet
+  - Secondary
+    - Lesen beim Secondary Node
+    - Falls keiner verfügbar: Fehler
+    - Ebenfalls Verwendung von maxStalenessSeconds
+    - Konsistenzproblem: Eventuell alte Werte gelesen
+  - Secondary Preferred Mode
+    - Lesen beim Secondary Node
+    - Falls keiner verfügbar: Lesen beim Primary Node
+  - Nearest Mode
+    - Lesen beim Knoten mit Node geringer Latenzzeit
+    - Primary und Secondaries gleichmaßen bewertet 
+
+Ausfall Primary
+![](/images/mongo3.png)
+Wenn heartbeat von Primary aussetzt, wählen die Secondaries neuen Primary
+
+Schreibvorgang Replica Sets
+Write Concern
+- Angabe der Anzahl an Teilnehmern, die Änderungen durchgeführt haben
+- w: 1 entspricht nur Primary hat Änderung gespeichert
+- majority: Mehrheit der Teilnehmer muss Änderung bestätigt haben (Abbildung unten)
+
+```
+db.products.insert(
+  { item: "cheese "},
+  { writeConcern: {
+      w: "majority",
+      wtimeout: 5000
+    }
+  }
+)
+```
+
+![](/images/mongo4.png)
+Quelle: docs.mongodb.org
 
 ## Sharding Cluster
+Skalierung in MongoDB
+
+Automatisches horizontales Skalieren
+- Autosharding: DB-Architektur wird abstrahiert für Anwendung
+- Verteilung auf Ebene der Collections
+- Balancing über verschiedene Shards möglich
+- Aufteilung der Daten durch Sharding-Keys
+- Chunk: Teil einer Collection
+  - Durch Sharding wird eine Collection in mehrere Chunks aufgeteilt
+- Sobald ein Chunk eine bestimmte Größe erreicht, wird er aufgeteilt
+- Speicherung von Chunks auf Server, genannt Shards
+
+![](/images/mongo5.png)
+
+Shard Key
+- Feld, aufgrund dessen Daten aufgeteilt werden
+- Wahl des Shard Keys
+  - Wichtig
+  - Bei hoher Anzahl an Cluster sollten alle Queries den Shard Key beinhalten, damit nicht alle Shards abgefragt werden müssen
+  - Kein Array
+  - Ziel: möglichst hohe Kardinalität (möglichst viele verschiedene mögliche Werte)
+
+![](/images/mongo6.png)
+
+- Jeder Shard und Config Server hat ein Replica Set dahinter
+- Auch Router sollten repliziert sein
+
+Sharding-Verfahren in MongoDB
+- Ascending Shard Keys
+  - Verwendung von ObjectId oä
+  - Entspricht ungefähr Datum
+  - Eigenschaften
+    - Neue Dokumente werden im gleich Chunk gespeichert
+    - D.h. alle Schreibzugriffe werden in gleichen Shard durchgeführt
+    - Nur ein Shard wächst, bis Chunk voll ist, dann wird ein neuer gewählt usw.
+    -  Müllsackprinzip (Ein Sack bis voll, dann bindet man ihn zu und nimmt den nächsten)
+- Hash Based Sharding
+  - Bildung von Chunks durch Verw. einer Hashfunktion
+  - "Zufällige" Verteilung
+  - Gute (gleichmäßige) Verteilung der Daten und Anfragen
+- Range Based Sharding
+  - Bildung von Chunks durch numerische Bereiche
+  - Beispiel: Postleitzahl
+  - Verteilung oft nicht optimal
+  - Lokalitätsprinzip kann genutzt werden
+- Location Shard Keys
+  - Verwendung IP-Adresse o.ä.
+  - Auch Lokalitätsprinzip
+- Manual Sharding
+  - Nur für Spezialfälle
+  - Balancer ausschalten
+  - Befehl `moveChunk`
 
 ## Schema Validierung
 
