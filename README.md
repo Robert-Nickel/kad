@@ -616,8 +616,129 @@ mongoimport --db db1 --collection pers pers.json
 ```
 
 ## Aggregation Framework (Map Reduce)
+Aggregation
+- Verarbeitung von Datensätzen
+- Gruppierung zu einem kombinierten Ergebnis
+- 3 Möglichkeiten
+  - Aggregation Framework
+  - Map-Reduce
+  - Single Purpose Aggregation Operations
+
+### Aggregation Framework
+- Alternative zu Map-Reduce
+- Pipeline Bearbeitung
+  - $match
+    - Ziel: Filtern von Dokumenten
+    - `{ $match: {<query>} }`
+    - Beispiel: `db.art.aggregate([{$match: {"author": "Dave"}}])`
+  - $project
+    - Ziel: Weitergabe bestimmter Attribute an die nächste Stufe der Pipeline
+    - Übernahme von Feldern spezifizieren:
+      - `<field>: <1 or true>` <- Einfügen eines Felds
+      - `_id: <0 or false>` <- Ausblendung eines Felds
+      - `<field>: <expression>` <- Neues Feld oder neuen Wert definieren
+    - Beispiel 1: Geburtsdatum ist gespeichert und es soll nach Alter gruppiert werden => Erste Operation: Berechnung des Alters durch `$project`
+    - Beispiel 2: `db.books.aggregate([{$project: {"title": 1, "author": 1}}])` entfernt alle Felder außer `title`, `author` und `_id`
+  - $group
+    - Ziel: Gruppierung von Dokumenten
+    - Festlegung des Gruppierungsfelds durch `_id`
+    - Beispiel:
+    - `db.art.aggregate([{$group: {"_id": "$country", "totalRevenue": "{"$sum": "$revenue"}", "$numSales: {"$sum": 1}"}}])`
+  - $sort
+    - Ziel: Sortierung (1 aufsteigend, -1 absteigend)
+    - Beispiel: `{"$sort": {"count": 1}}` <- Aufsteigend nach `count` sortiert
+  - $limit
+    - Ziel: Beschränkt Ergebnis auf n Dokumente
+    - {"$limit": 5} <- Beschränkt Ergebnis auf 5 Dokumente
+  - $lookup
+    - Ziel: Zusammenbringen durch Suchen von Joinpartner
+    - Beispiel:
+```
+db.orders.insert([
+  {"item": "almond", "quantity": 2},
+  {"item": "bacon", "quantity": 5}
+])
+db.inventory.insert([
+  {"sku": "almond", "description": "good product"}, // sku = stock keeping unit (Artikelposition)
+  {"sku": "bacon", "description": "better product"}
+])
+db.orders.aggregate([
+  {
+    $lookup: {
+      "from": "inventory",
+      "localField": "item",
+      "foreignField": "sku",
+      "as": "inventory_docs"
+    }
+  }
+])
+=>
+{
+  "item": "almonds",
+  "quantity": 2,
+  "inventory_docs": [
+    {
+      "sku": "almonds",
+      "description": "good product"
+    }
+  ]
+},
+{
+  "item": "bacon",
+  "quantity": 5,
+  "inventory_docs": [
+    {
+      "sku": "bacon",
+      "description": "better product"
+    }
+  ]
+}
+```
+
+- Daten werden zu aggregierten Resultaten transformiert
+- Beispiel:
+  - Autoren aus Dokument Artikel auswählen
+  - Nach Autoren gruppieren und pro Autor zählen
+  - Nach Anzahl sortieren
+  - Erste 5 Elemente ausgeben
+
+```
+db.articles.aggregate(
+  [
+    {"$project": {"author": 1}},
+    {"$group": {"_id":"$author", "count": {"$sum": 1}}},
+    {"$sort": {"count": -1}},
+    {"$limit": 5}
+  ]
+)
+```
+
+### Map-Reduce
+- Programmiermodell für nebenläufige Berechnung
+- 3 Phasen
+  - Map: Paralleles Berechnen von Zwischenergebnissen (manuell)
+  - Shuffle: Gruppierung der Keys (automatisch)
+  - Reduce: Berechnung Gesamtergebnis (manuell)
+- Beispiel:
+```
+db.orders.mapReduce(
+  function() { emit(this.cust_id, this.amount); },    // <- map
+  function(key, values) { return Array.sum(values) }, // <- reduce
+  {
+    query: { "status": "A" },
+    out: "orders_total"
+  }
+)
+```
+
+### Single Purpose Aggregation Operations
+- $distinct
+  - Ziel: Abfrage ohne doppelte Ergebnisse
+  - Beispiel: `db.orders.distinct( "cust_id" )` => `["123", "456"]`
+- $sort
 
 ## Replica Sets
+
 
 ## Sharding Cluster
 
