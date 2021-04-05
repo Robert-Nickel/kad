@@ -293,3 +293,334 @@ Kriterien für Auswahl
 | Flüchtige Daten                                                                                   | memcache und dessen Derivate                             |
 
 &rarr; alles stark im Fluss, keine finale Aussage möglich
+
+# 2 MongoDB
+
+## Einführung, Befehle
+MongoDB
+- Dokumentenorientierte Open-Source
+- Begriff abgeleitet von _humongous_: gigantisch, riesig
+- schemafreie Speicherung möglich
+- Speicherung mit JSON-Schema möglich
+- Speicherung von JSON Dokumenten
+- Replikation: Master-Slave
+- Sharding für horizontale Skalierung
+- Implementierung Map/Reduce-Algorithmus
+- Unterstützung aller wichtigen OS und Sprachen
+- Speicherung in BSON (binary JSON) => mehr Datentypen z.B. Date, Timestamp, Double
+
+JSON
+- _JavaScript Object Notation_
+- Format zum Datenaustausch
+- Nachfolger zu XML
+- Key: Value
+- Key in "", falls Sonderzeichen wie . oder Leerzeichen
+- mögliche Values
+  - Zeichenkette, Zahl
+  - True, False
+  - Null
+  - JSON-Objekt {}
+  - Array []
+- Beispiel:
+
+```json
+{
+  "Titel": "KAD",
+  "ECTS": 5,
+  "Stichworte": ["NoSQL", "Datenbanken"],
+  "Voraussetzung": {
+    "Titel": "Datenbanksysteme",
+    "Studiengänge": "CvD"
+  }
+}
+```
+
+Datenbankmodell
+
+![](/images/mongo1.png)
+
+- Database: Menge von Collections
+- Collection: Sammlung ähnlicher Documents (bestehend aus Key/Value Paaren), ähnlich wie table
+- Document: Speichereinheit
+- _id: Identifikator eines Documents, wird generiert wenn nicht angegeben
+
+Commands
+```
+db                // zeigt akt. DB
+
+show dbs          // zeigt alle DBs
+
+use test          // (erzeugt &) verwendet DB test
+
+db.dropDatabase() // löscht Datenbank
+```
+
+### Speichern eines Documents
+```
+robert = {
+  "name": "Robert Nickel",
+  "studiengang": "MSI"
+}
+db.people.insert(robert)
+```
+
+`save` statt `insert`:
+- falls `id` nicht enthalten: `insert`
+- falls `id` enthalten: `update` (`upsert = true`)
+
+[Save vs. Insert vs. Update](https://stackoverflow.com/a/16209860)
+
+### Referencing und Embedding
+Embedding (ganzes Objekt duplizieren, Denormalisierung)
+```
+boger = {"name": "Boger"}
+db.people.save(boger)
+boger2 = db.people.findOne({"name": "Boger"})
+robert = {
+  "name": "Robert Nickel",
+  "studiengang": "MSI",
+  "lieblingsprof": boger2
+}
+db.people.save(robert)
+```
+=>
+```
+{
+  "_id" : ObjectId("606ac18b06709cf160ad34a8"),
+  "name" : "Robert Nickel",
+  "studiengang" : "MSI",
+  "lieblingsprof" : {     // <- interessanter Teil
+    "name" : "Boger"
+  }
+}
+```
+
+Referencing (ObjectId hinterlegen, Normalisierung)
+```
+boger = {"name": "Boger"}
+db.people.save(boger)
+boger2 = db.people.findOne({"name": "Boger"})
+robert = {
+  "name": "Robert Nickel",
+  "studiengang": "MSI",
+  "lieblingsprof": boger2._id
+}
+```
+=>
+```
+{
+  "_id" : ObjectId("606ac0ed06709cf160ad34a7"),
+  "name" : "Robert Nickel",
+  "studiengang" : "MSI",
+  "lieblingsprof" : ObjectId("606ac07506709cf160ad34a6")  // <- interessanter Teil
+}
+```
+
+Referencing mit definierter Collection per `DBRef`
+```
+db.profs.save({"name": "Boger"})
+boger = db.profs.findOne({"name": "Boger"})
+robert = {
+  "name": "Robert Nickel",
+  "studiengang": "MSI",
+  "lieblingsprof": new DBRef("profs", boger._id)
+}
+db.studs.save(robert)
+```
+=>
+studs:
+```
+{
+  "_id" : ObjectId("606ac34906709cf160ad34ab"),
+  "name" : "Robert Nickel",
+  "studiengang" : "MSI",
+  "lieblingsprof" : DBRef("profs", ObjectId("606ac32c06709cf160ad34aa"))
+}
+```
+profs:
+```
+{ "_id" : ObjectId("606ac32c06709cf160ad34aa"), "name" : "Boger" }
+```
+
+Referencing & Embedding sind in beide Richtungen möglich.
+Hybrider Ansatz möglich.
+
+Jeweilige Vorteile
+
+| Embedding (+)                    | Referencing (+)                 |
+| -------------------------------- | ------------------------------- |
+| Kleine Subdokumente              | Große Subdokumente              |
+| Daten, die sich selten ändern    | Daten, die sich häufig ändern   |
+| Eventual consistency ausreichend | Immediate consistency notwendig |
+| Kleine Anzahl Subdokumente       | Große Anzahl Subdokumente       |
+| Schnelles Lesen                  | Schnelles Schreiben             |
+
+### Suche
+
+```
+// Suche nach allen documents
+db.people.find({})
+
+// Suche nach allen, die Nickel heißen
+db.people.find({"name": "Nickel"})
+
+// Suche nach allen geburtsjahren < 1993 ($lt=less than)
+db.people.find({"geburtsjahr": {$lt: 1993}})
+
+// nur geburtsjahr wird ausgegeben, id wird explizit versteckt, alle anderen attribute werden indirekt versteckt
+db.people.find({"name": "Nickel"}, {"_id": 0, "geburtsjahr": 1}) 
+
+// UND-Verknüpfung name UND geburtsjahr
+db.people.find({"name": "Nickel", "geburtsjahr": 1993}) 
+
+// ODER-Verknüpfung name ODER geburtsjahr
+db.people.find({$or: ["name": "Nickel", "geburtsjahr": 1993]})
+
+// Suche alle studs, deren lieblingsprof Boger heißt (bei Embedding)
+db.studs.find({"lieblingsprof": "Boger"})
+
+// Suche alle studs, deren lieblingsprof Boger heißt (bei Referencing)
+db.studs.find({"lieblingsprof": db.profs.findOne({"name": "Boger"})._id})
+
+// Suche bei Referencing mit DBRefs
+db.studs.find({
+  "lieblingsprof.$ref": "profs",
+  "lieblingsprof.$id": db.profs.findOne({"name": "Boger"})._id
+})
+
+// Suche alle studs, die 5 Fächer belegen (Länge des Arrays als Kriterium)
+db.studs.find("faecher": {$size: 5})
+
+// Suche alle people, die in 48336 oder 78315 leben
+db.people.find("Adresse.PLZ": {$in: [48336, 78315])
+
+// Suche alle people, die NICHT IN 48336 oder 78315 leben
+db.people.find("Adresse.PLZ": {$nin: [48336, 78315])
+
+
+```
+
+Nach dem find()
+```
+// Ausgabeformat verändern
+find(...).forEach(function(people) {
+    print("name: " + people.name);
+  })
+
+// Sortieren nach (1 = aufsteigend, -1 = absteigend)
+find(...).sort({"name": 1})
+
+// Zählen
+find(...).count()
+
+// Reduzierung der Anzahl der Ergebnisse
+find(...).limit()
+
+// Speichern und Iterieren des Ergebnisses in Variable
+var result = find(...)
+
+while(result.hasNext()) {
+  obj = result.next();
+  // ...
+}
+// ODER
+result.forEach(function(item) {
+  // ...
+})
+```
+
+Gruppierung
+```
+// Wie viele Personen pro Jahrgang gibt es?
+db.people.group({
+  key: {jahrgang: true},
+  initial: {Total: 0},
+  reduce: function(items, prev) {
+    prev.Total += 1
+  }
+}) 
+```
+
+Where Queries (Werte des Dokuments miteinander vergleichen)
+- hat Sicherheitsprobleme, da String die Ausführung bestimmt
+```
+// Suche alle deren Vorname auch der Nachname ist
+db.people.find($where: "this.vorname == this.nachname")
+
+// Generische Funktion
+db.people.find($where: function() {
+  // ...
+})
+```
+
+Updates
+- Erstes Argument: Suchkriterium
+- Zweites Argument: Update
+- Drittes Argument: upsert und multi
+```
+// ! Document Replacement: Alle Attribute müssen angegeben werden, ansonsten Löschung
+db.people.update(
+  {"name": "Robert"},
+  {"name": "Robert", "gehalt": 100000}
+  true
+)
+
+// Update mit $set - keine Angabe aller Attribute nötig
+db.people.update(
+  {"name": "Robert"},
+  {$set: {"gehalt": 100000}}
+)
+
+// Update inkrementieren um 1000 mit $inc - keine Angabe aller Attribute nötig
+db.people.update(
+  {"name": "Robert"},
+  {$inc: {"gehalt": 1000}},
+  {upsert: false, multi: true}, // multi = true => Alle Roberts kriegen eine Gehaltserhöhung
+)
+
+// Hinzufügen zu Array mit $push
+db.people.update(
+  {"name": "Robert"},
+  {$push: {"PLZ": 89231}}
+)
+
+// Entfernen eines Wertes mit $pull
+db.people.update(
+  {"name": "Robert"},
+  {$pull: {"PLZ": 89231}}
+)
+```
+
+InsertOne und InsertMany: *exists*
+
+Löschen
+```
+// Löschen aller Dokumente
+db.people.remove({}) 
+
+// Löschen mit Bedingung
+db.people.remove({"name": "Robert"})
+
+// Löschen mit Anzahl (nur 1)
+db.people.remove({"name": "Robert"}, 1)
+
+```
+
+Export und Import
+```
+// Exportiere alle Roberts
+mongoexport --db db1 --collection pers --query '{"name": "Robert"}' --out pers.json
+
+// Importiere pers.json
+mongoimport --db db1 --collection pers pers.json
+```
+
+## Aggregation Framework (Map Reduce)
+
+## Replica Sets
+
+## Sharding Cluster
+
+## Schema Validierung
+
+## ACID
