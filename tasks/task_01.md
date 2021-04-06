@@ -314,13 +314,13 @@ b)
 db.lectures.find(
     {
         "subject.$id" : db.subjects.findOne({"token": "AIN"})._id,
-        "ECTS": {$lt: 5}
+        "SWS": {$lt: 5}
     },
     {
         "_id": 0,
         "name": 1
     }
-)
+).sort({"name": 1})
 ```
 
 c)
@@ -356,7 +356,7 @@ db.lectures.aggregate([
 
 e)
 
-NOTE: $limit: 2 zeigt, dass 2 Profs beide 11 totalSwsInAin haben
+Achtung: $limit: 2 zeigt, dass 2 Profs beide 11 totalSwsInAin haben
 
 ```
 db.lectures.aggregate([
@@ -388,3 +388,61 @@ db.lectures.aggregate([
 ```
 
 ### Aufgabe 3
+a)
+
+```
+ain = db.subjects.findOne({"token": "AIN"})
+win = db.subjects.findOne({"token": "WIN"})
+msi = db.subjects.findOne({"token": "MSI"})
+
+db.lectures.updateMany(
+    { "subject.$id": ain._id },
+    {
+        $set: { "subject.token": ain.token },
+        $set: { "subject.degree": ain.degree }
+    }
+)
+db.lectures.updateMany(
+    { "subject.$id": win._id },
+    { 
+        $set: { "subject.token": win.token },
+        $set: { "subject.degree": win.degree }
+    }
+)
+db.lectures.updateMany(
+    { "subject.$id": msi._id },
+    {
+        $set: { "subject.token": msi.token },
+        $set: { "subject.degree": msi.degree }
+    }
+)
+```
+
+b)
+
+```
+db.lectures.mapReduce(
+  function() { 
+      emit( this.subjectToken + " " + this.semester + " : ", { "SWS": this.SWS, "ECTS": this.ECTS });
+  },
+  function(key, values) { 
+      sws = 0
+      ects = 0
+      
+      values.forEach(value => {
+        sws += value.SWS
+        ects += value.ECTS
+      })
+
+      return { sws, ects }
+  },
+  {
+    query: { "subject.degree": "Bachelor" },
+    out: "sws_total"
+  }
+)
+
+db.sws_total.find({}).forEach(element => {
+    print(element._id + element.value.sws + " SWS, " + element.value.ects + " ECTS")
+})
+```
