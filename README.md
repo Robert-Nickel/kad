@@ -854,5 +854,87 @@ Sharding-Verfahren in MongoDB
   - Befehl `moveChunk`
 
 ## Schema Validierung
+JSON Schema:
+- Schemaspezifikation zu JSON-Dokumente
+- Überprüfung ob ein JSON-Dokument eine Schemadefinition erfüllt
+- [Stand von JSON Schema](https://json-schema.org/)
+
+Validierungsregeln beim Erzeugen einer Collection mit
+
+```
+db.createCollection("students", {
+  validator: {
+    $jsonSchema: {
+      bsonType: "object",
+      required: ["name", "year", "major", "gpa"],
+      properties: {
+        name: {
+          bsonType: "string",
+          description: "must be a string and is required"
+        },
+        degree: {
+          bsonType: "string",
+          description: "must be a string and is not required"
+        },
+        // Auch queries sind möglich, z.B. $regex...
+        email: {
+          $regex: /@mongodb\.com$/
+        },
+        // ... oder $in
+        status: {
+          $in: ["Unknown", "Incomplete"]
+        }
+        // ...
+      }
+    }
+  }
+})
+```
+
+Validierungsregel zu bestehender Collection hinzufügen mit
+
+```
+db.runCommand({
+  collMod: "contacts",
+  validator: {
+    $jsonSchema: {
+    // ...
+    }
+  }
+})
+```
+
+Optionen
+- ValidationLevel: bestimmt, wie strikt MongoDB Validationsregel anwendet
+  - strict (default): Regel für alle Dokumente angewendet
+  - moderate: Regel für Inserts und Updates angewendet
+- ValidationAction: bestimmte Aktion bei Verletzung einer Validationsregel
+  - error (default): verweigert Insert/Update
+  - warn: Verletzung wird aufgegeben, wird trotzdem gespeichert
 
 ## ACID
+- Single Document Transactions
+  - 80-90% aller Anfragen (laut MongoDB)
+  - Gewährleistung Atomarität
+- Multi Document Transactions
+  - seit v4.0
+    - ACID auf Replica Sets
+  - seit v4.2 (August 2019)
+    - ACID auf Sharded Clusters
+  - Atomar:
+    - alle Änderungen werden gespeichert oder
+    - alle Änderungen werden verworfen
+  - [Einschränkungen](https://docs.mongodb.com/manual/core/transactions-operations/#crud-operations)
+  - Performance
+    - nicht so performant wie SDT
+    - Empfehlung: denormalisiertes Datenmodell, wenig Referenzen, keine 3. Normalform
+  - Höhere Kosten
+  - Best Practices
+    - Transaktionsdauer < 60
+    - Oplog Size Limit: 16MB
+    - Es sollten nur bis zu 1000 Documents geändert werden
+    - Collections sollten bereits existieren
+- Retrying Transactions
+  - Error labels seit v4.0
+  - Behandlung temp. Fehler und Wiederholung der Transaktion
+  - Permanente Fehler (z.B. parse Fehler) bekommen kein Label
