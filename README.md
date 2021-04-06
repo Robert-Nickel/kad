@@ -603,6 +603,7 @@ db.people.update(
 InsertOne und InsertMany: *exists*
 
 Löschen
+
 ```
 // Löschen aller Dokumente
 db.people.remove({}) 
