@@ -1,0 +1,30 @@
+{"_id":{"$oid":"606c0f41458039a6a1aba91c"},"name":"Konzepte aktueller Datenbanksysteme","prof":"Eck","semester":2.0,"subject":{"$ref":"subjects","$id":{"$oid":"606bff875db5761f5c96d815"}},"SWS":3.0,"ECTS":5.0}
+{"_id":{"$oid":"606c0f45458039a6a1aba91d"},"name":"Komplexitätstheorie","prof":"Meyer","semester":1.0,"subject":{"$ref":"subjects","$id":{"$oid":"606bff875db5761f5c96d815"}},"SWS":2.0,"ECTS":3.0}
+{"_id":{"$oid":"606c0f4c458039a6a1aba91e"},"name":"Diskrete Mathematik","prof":"Stähle","semester":1.0,"subject":{"$ref":"subjects","$id":{"$oid":"606bff875db5761f5c96d815"}},"SWS":2.0,"ECTS":3.0}
+{"_id":{"$oid":"606c0f50458039a6a1aba91f"},"name":"Algorithmentechnik","prof":"Umlauf","semester":2.0,"subject":{"$ref":"subjects","$id":{"$oid":"606bff875db5761f5c96d815"}},"SWS":2.0,"ECTS":3.0}
+{"_id":{"$oid":"606c0f55458039a6a1aba920"},"name":"Stochastik","prof":"Stähle","semester":2.0,"subject":{"$ref":"subjects","$id":{"$oid":"606bff875db5761f5c96d815"}},"SWS":2.0,"ECTS":3.0}
+{"_id":{"$oid":"606c0f5a458039a6a1aba921"},"name":"Team-Projekt","semester":2.0,"subject":{"$ref":"subjects","$id":{"$oid":"606bff875db5761f5c96d815"}},"ECTS":8.0}
+{"_id":{"$oid":"606c0f5e458039a6a1aba922"},"name":"Seminar","semester":1.0,"subject":{"$ref":"subjects","$id":{"$oid":"606bff875db5761f5c96d815"}},"ECTS":8.0}
+{"_id":{"$oid":"606c0f63458039a6a1aba923"},"name":"Agile Vorgehensmodelle","prof":"Schimkat","semester":1.0,"subject":{"$ref":"subjects","$id":{"$oid":"606bff875db5761f5c96d815"}},"SWS":4.0,"ECTS":5.0}
+{"_id":{"$oid":"606c0f68458039a6a1aba924"},"name":"Mobile Kommunikation und Kollaboration","prof":"Müller","semester":1.0,"subject":{"$ref":"subjects","$id":{"$oid":"606bff875db5761f5c96d815"}},"SWS":4.0,"ECTS":5.0}
+{"_id":{"$oid":"606c0f6c458039a6a1aba925"},"name":"Reactive Systems","prof":"Boger","semester":1.0,"subject":{"$ref":"subjects","$id":{"$oid":"606bff875db5761f5c96d815"}},"SWS":3.0,"ECTS":5.0}
+{"_id":{"$oid":"606c0f6f458039a6a1aba926"},"name":"Mathematik für Wirtschaftsinformatiker 1","prof":"Bohnet","semester":1.0,"subject":{"$ref":"subjects","$id":{"$oid":"606bff835db5761f5c96d814"}},"SWS":5.0,"ECTS":6.0}
+{"_id":{"$oid":"606c0f76458039a6a1aba927"},"name":"Betriebswirtschaftslehre","prof":"Rentrop","semester":2.0,"subject":{"$ref":"subjects","$id":{"$oid":"606bff835db5761f5c96d814"}},"SWS":6.0,"ECTS":7.0}
+{"_id":{"$oid":"606c0f7b458039a6a1aba928"},"name":"Rechnungswesen","prof":"Rentrop","semester":2.0,"subject":{"$ref":"subjects","$id":{"$oid":"606bff835db5761f5c96d814"}},"SWS":6.0,"ECTS":8.0}
+{"_id":{"$oid":"606c0f7e458039a6a1aba929"},"name":"Grundlagen der Wirtschaftsinformatik","prof":"Hoffmann","semester":2.0,"subject":{"$ref":"subjects","$id":{"$oid":"606bff835db5761f5c96d814"}},"SWS":6.0,"ECTS":8.0}
+{"_id":{"$oid":"606c0f81458039a6a1aba92a"},"name":"Einführung in die Programmierung","prof":"Langweg","semester":1.0,"subject":{"$ref":"subjects","$id":{"$oid":"606bff835db5761f5c96d814"}},"SWS":6.0,"ECTS":8.0}
+{"_id":{"$oid":"606c0f85458039a6a1aba92b"},"name":"Hardware- und Systemgrundlagen","prof":"Neuschwander","semester":1.0,"subject":{"$ref":"subjects","$id":{"$oid":"606bff835db5761f5c96d814"}},"SWS":4.0,"ECTS":5.0}
+{"_id":{"$oid":"606c0f89458039a6a1aba92c"},"name":"Mathematik für Wirtschaftsinformatiker 2","prof":"Bohnet","semester":2.0,"subject":{"$ref":"subjects","$id":{"$oid":"606bff835db5761f5c96d814"}},"SWS":5.0,"ECTS":6.0}
+{"_id":{"$oid":"606c0f8c458039a6a1aba92d"},"name":"Algorithmen und Datenstrukturen","prof":"Meyer","semester":2.0,"subject":{"$ref":"subjects","$id":{"$oid":"606bff835db5761f5c96d814"}},"SWS":5.0,"ECTS":6.0}
+{"_id":{"$oid":"606c0f90458039a6a1aba92e"},"name":"Betriebssysteme","prof":"Müller","semester":2.0,"subject":{"$ref":"subjects","$id":{"$oid":"606bff835db5761f5c96d814"}},"SWS":4.0,"ECTS":6.0}
+{"_id":{"$oid":"606c101830d231368b6b8540"},"name":"Wahrscheinlichkeitstheorie und Statistik","prof":"Dürr","semester":3.0,"subject":{"$ref":"subjects","$id":{"$oid":"606bff835db5761f5c96d814"}},"SWS":5.0,"ECTS":6.0}
+{"_id":{"$oid":"606c188c30d231368b6b8541"},"name":"Mathematik 1","prof":"Axthelm","semester":1.0,"subject":{"$ref":"subjects","$id":{"$oid":"606bff7f5db5761f5c96d813"}},"SWS":6.0,"ECTS":8.0}
+{"_id":{"$oid":"606c188c30d231368b6b8542"},"name":"Digitaltechnik","prof":"Schoppa","semester":1.0,"subject":{"$ref":"subjects","$id":{"$oid":"606bff7f5db5761f5c96d813"}},"SWS":6.0,"ECTS":8.0}
+{"_id":{"$oid":"606c188c30d231368b6b8543"},"name":"Programmiertechnik 1","prof":"von Drachenfels","semester":1.0,"subject":{"$ref":"subjects","$id":{"$oid":"606bff7f5db5761f5c96d813"}},"SWS":6.0,"ECTS":8.0}
+{"_id":{"$oid":"606c188c30d231368b6b8544"},"name":"Softwaremodellierung","prof":"Eck","semester":1.0,"subject":{"$ref":"subjects","$id":{"$oid":"606bff7f5db5761f5c96d813"}},"SWS":5.0,"ECTS":6.0}
+{"_id":{"$oid":"606c188c30d231368b6b8545"},"name":"Mathematik 2","prof":"Axthelm","semester":2.0,"subject":{"$ref":"subjects","$id":{"$oid":"606bff7f5db5761f5c96d813"}},"SWS":5.0,"ECTS":6.0}
+{"_id":{"$oid":"606c188c30d231368b6b8546"},"name":"Stochastik","prof":"Stähle","semester":2.0,"subject":{"$ref":"subjects","$id":{"$oid":"606bff7f5db5761f5c96d813"}},"SWS":3.0,"ECTS":5.0}
+{"_id":{"$oid":"606c188c30d231368b6b8547"},"name":"Programmiertechnik 2","prof":"Bittel","semester":2.0,"subject":{"$ref":"subjects","$id":{"$oid":"606bff7f5db5761f5c96d813"}},"SWS":6.0,"ECTS":7.0}
+{"_id":{"$oid":"606c188c30d231368b6b8548"},"name":"Systemprogrammierung","prof":"von Drachenfels","semester":2.0,"subject":{"$ref":"subjects","$id":{"$oid":"606bff7f5db5761f5c96d813"}},"SWS":5.0,"ECTS":6.0}
+{"_id":{"$oid":"606c188c30d231368b6b8549"},"name":"Rechnerarchitekturen","prof":"Neuschwander","semester":2.0,"subject":{"$ref":"subjects","$id":{"$oid":"606bff7f5db5761f5c96d813"}},"SWS":5.0,"ECTS":6.0}
+{"_id":{"$oid":"606c188c30d231368b6b854a"},"name":"Sensoren, Signale und Systeme","prof":"Franz","semester":3.0,"subject":{"$ref":"subjects","$id":{"$oid":"606bff7f5db5761f5c96d813"}},"SWS":5.0,"ECTS":6.0}

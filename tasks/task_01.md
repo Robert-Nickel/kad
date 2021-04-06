@@ -15,9 +15,6 @@ msi_id = db.subjects.findOne({"token": "MSI"})._id
 win_id = db.subjects.findOne({"token": "WIN"})._id
 ain_id = db.subjects.findOne({"token": "AIN"})._id
 
-
-// create the lectures
-// 10 for MSI
 db.lectures.save({
     "name":"Konzepte aktueller Datenbanksysteme",
     "prof": "Eck",
@@ -103,7 +100,6 @@ db.lectures.save({
     "ECTS": 5
 })
 
-// 10 for WIN
 db.lectures.save({
     "name": "Mathematik für Wirtschaftsinformatiker 1",
     "prof": "Bohnet",
@@ -194,7 +190,6 @@ db.lectures.save({
     "ECTS": 6
 })
 
-// TODO: 10 for AIN
 db.lectures.save({
     "name": "Mathematik 1",
     "prof": "Axthelm",
@@ -285,6 +280,17 @@ db.lectures.save({
     "ECTS": 6
 })
 
+```
+
+Alternative: Importieren der Daten
+- [Studienfächer](/tasks/task_01_subjects.json)
+- [Vorlesungen](/tasks/task_01_lectures.json)
+
+mittels
+
+```
+mongoimport --db=task01 --collection=subjects --file=subjects.json
+mongoimport --db=task01 --collection=lectures --file=lectures.json
 ```
 
 ### Aufgabe 2

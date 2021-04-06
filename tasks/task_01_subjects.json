@@ -1,0 +1,3 @@
+{"_id":{"$oid":"606bff7f5db5761f5c96d813"},"token":"AIN","name":"Angewandte Informatik","degree":"Bachelor"}
+{"_id":{"$oid":"606bff835db5761f5c96d814"},"token":"WIN","name":"Wirtschaftsinformatik","degree":"Bachelor"}
+{"_id":{"$oid":"606bff875db5761f5c96d815"},"token":"MSI","name":"Informatik","degree":"Master"}
