@@ -555,7 +555,7 @@ Where Queries (Werte des Dokuments miteinander vergleichen)
 
 ```
 // Suche alle deren Vorname auch der Nachname ist
-db.people.find($where: "this.vorname == this.nachname")
+db.people.find({$where: "this.vorname == this.nachname"})
 
 // Generische Funktion
 db.people.find($where: function() {
@@ -627,8 +627,7 @@ mongoexport --db db1 --collection pers --query '{"name": "Robert"}' --out pers.j
 mongoimport --db db1 --collection pers pers.json
 ```
 
-## Aggregation Framework (Map Reduce)
-Aggregation
+## Aggregation
 - Verarbeitung von Datensätzen
 - Gruppierung zu einem kombinierten Ergebnis
 - 3 Möglichkeiten
