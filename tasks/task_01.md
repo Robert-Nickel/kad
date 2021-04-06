@@ -283,8 +283,8 @@ db.lectures.save({
 ```
 
 Alternative: Importieren der Daten
-- [Studienfächer](/tasks/task_01_subjects.json)
-- [Vorlesungen](/tasks/task_01_lectures.json)
+- [Studienfächer](https://github.com/Robert-Nickel/kad/blob/master/tasks/task_01_subjects.json)
+- [Vorlesungen](https://github.com/Robert-Nickel/kad/blob/master/tasks/task_01_lectures.json)
 
 mittels
 
