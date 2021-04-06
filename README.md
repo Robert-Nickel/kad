@@ -345,6 +345,7 @@ Datenbankmodell
 - _id: Identifikator eines Documents, wird generiert wenn nicht angegeben
 
 Commands
+
 ```
 db                // zeigt akt. DB
 
@@ -566,6 +567,7 @@ Updates
 - Erstes Argument: Suchkriterium
 - Zweites Argument: Update
 - Drittes Argument: upsert und multi
+
 ```
 // ! Document Replacement: Alle Attribute müssen angegeben werden, ansonsten Löschung
 db.people.update(
@@ -613,10 +615,10 @@ db.people.remove({"name": "Robert"})
 
 // Löschen mit Anzahl (nur 1)
 db.people.remove({"name": "Robert"}, 1)
-
 ```
 
 Export und Import
+
 ```
 // Exportiere alle Roberts
 mongoexport --db db1 --collection pers --query '{"name": "Robert"}' --out pers.json
@@ -662,7 +664,8 @@ Aggregation
     - {"$limit": 5} <- Beschränkt Ergebnis auf 5 Dokumente
   - $lookup
     - Ziel: Zusammenbringen durch Suchen von Joinpartner
-    - Beispiel:
+    - Beispiel
+
 ```
 db.orders.insert([
   {"item": "almond", "quantity": 2},
@@ -730,6 +733,7 @@ db.articles.aggregate(
   - Shuffle: Gruppierung der Keys (automatisch)
   - Reduce: Berechnung Gesamtergebnis (manuell)
 - Beispiel:
+
 ```
 db.orders.mapReduce(
   function() { emit(this.cust_id, this.amount); },    // <- map
