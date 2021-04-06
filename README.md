@@ -356,6 +356,7 @@ db.dropDatabase() // löscht Datenbank
 ```
 
 ### Speichern eines Documents
+
 ```
 robert = {
   "name": "Robert Nickel",
@@ -372,6 +373,7 @@ db.people.insert(robert)
 
 ### Referencing und Embedding
 Embedding (ganzes Objekt duplizieren, Denormalisierung)
+
 ```
 boger = {"name": "Boger"}
 db.people.save(boger)
@@ -384,6 +386,7 @@ robert = {
 db.people.save(robert)
 ```
 =>
+
 ```
 {
   "_id" : ObjectId("606ac18b06709cf160ad34a8"),
@@ -396,6 +399,7 @@ db.people.save(robert)
 ```
 
 Referencing (ObjectId hinterlegen, Normalisierung)
+
 ```
 boger = {"name": "Boger"}
 db.people.save(boger)
@@ -407,6 +411,7 @@ robert = {
 }
 ```
 =>
+
 ```
 {
   "_id" : ObjectId("606ac0ed06709cf160ad34a7"),
@@ -417,6 +422,7 @@ robert = {
 ```
 
 Referencing mit definierter Collection per `DBRef`
+
 ```
 db.profs.save({"name": "Boger"})
 boger = db.profs.findOne({"name": "Boger"})
@@ -429,6 +435,7 @@ db.studs.save(robert)
 ```
 =>
 studs:
+
 ```
 {
   "_id" : ObjectId("606ac34906709cf160ad34ab"),
@@ -438,6 +445,7 @@ studs:
 }
 ```
 profs:
+
 ```
 { "_id" : ObjectId("606ac32c06709cf160ad34aa"), "name" : "Boger" }
 ```
@@ -496,11 +504,10 @@ db.people.find("Adresse.PLZ": {$in: [48336, 78315])
 
 // Suche alle people, die NICHT IN 48336 oder 78315 leben
 db.people.find("Adresse.PLZ": {$nin: [48336, 78315])
-
-
 ```
 
 Nach dem find()
+
 ```
 // Ausgabeformat verändern
 find(...).forEach(function(people) {
@@ -530,6 +537,7 @@ result.forEach(function(item) {
 ```
 
 Gruppierung
+
 ```
 // Wie viele Personen pro Jahrgang gibt es?
 db.people.group({
@@ -543,6 +551,7 @@ db.people.group({
 
 Where Queries (Werte des Dokuments miteinander vergleichen)
 - hat Sicherheitsprobleme, da String die Ausführung bestimmt
+
 ```
 // Suche alle deren Vorname auch der Nachname ist
 db.people.find($where: "this.vorname == this.nachname")
