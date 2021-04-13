@@ -398,22 +398,28 @@ msi = db.subjects.findOne({"token": "MSI"})
 db.lectures.updateMany(
     { "subject.$id": ain._id },
     {
-        $set: { "subject.token": ain.token },
-        $set: { "subject.degree": ain.degree }
+        $set: {
+            "subject.token": ain.token,
+            "subject.degree": ain.degree
+        }
     }
 )
 db.lectures.updateMany(
     { "subject.$id": win._id },
     { 
-        $set: { "subject.token": win.token },
-        $set: { "subject.degree": win.degree }
+        $set: {
+            "subject.token": win.token,
+            "subject.degree": win.degree 
+        }
     }
 )
 db.lectures.updateMany(
     { "subject.$id": msi._id },
     {
-        $set: { "subject.token": msi.token },
-        $set: { "subject.degree": msi.degree }
+        $set: {
+            "subject.token": msi.token ,
+            "subject.degree": msi.degree
+        }
     }
 )
 ```
@@ -423,7 +429,7 @@ b)
 ```
 db.lectures.mapReduce(
   function() { 
-      emit( this.subjectToken + " " + this.semester + " : ", { "SWS": this.SWS, "ECTS": this.ECTS });
+      emit( this.subject.token + " " + this.semester + " : ", { "SWS": this.SWS, "ECTS": this.ECTS });
   },
   function(key, values) { 
       sws = 0
