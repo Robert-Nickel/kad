@@ -18,7 +18,7 @@ MERGE (:Vorlesung {Titel:'Reactive Systems', SWS: 4, ECTS: 5})
 MERGE (:Vorlesung {Titel:'IT-Leadership', SWS: 4, ECTS: 5})
 ```
 
-![](/images/neo4j0.png)
+![](../images/neo4j0.png)
 
 
 ```
@@ -35,7 +35,7 @@ MERGE (:Professor {Name:'Rentrop'})
 MERGE (:Professor {Name:'Boger'})
 ```
 
-![](/images/neo4j1.png)
+![](../images/neo4j1.png)
 
 ```
 MERGE (:Studiengang {Name:'Angewandte Informatik', Kuerzel:'AIN', Abschluss:'Bachelor'})
@@ -43,7 +43,7 @@ MERGE (:Studiengang {Name:'Gesundheitsinformatik', Kuerzel:'GIB', Abschluss:'Bac
 MERGE (:Studiengang {Name:'Informatik', Kuerzel:'MSI', Abschluss:'Master'})
 ```
 
-![](/images/neo4j2.png)
+![](../images/neo4j2.png)
 
 ```
 MATCH (p:Professor {Name: 'Eck'}) 
@@ -91,7 +91,7 @@ MATCH (s:Studiengang {Kuerzel: 'AIN'})
 MERGE (p) -[r:ZUGEORDNET]-> (s);
 ```
 
-![](/images/neo4j3.png)
+![](../images/neo4j3.png)
 
 ```
 MATCH (v:Vorlesung {Titel:'Konzepte aktueller Datenbanksysteme'})
@@ -151,7 +151,7 @@ MATCH (s:Studiengang {Kuerzel: 'MSI'})
 MERGE (v) -[:ENTHALTEN]-> (s);
 ```
 
-![](/images/neo4j4.png)
+![](../images/neo4j4.png)
 
 ```
 MATCH (v:Vorlesung {Titel:'Konzepte aktueller Datenbanksysteme'})
@@ -211,7 +211,7 @@ MATCH (p:Professor {Name: 'Boger'})
 MERGE (p) -[:HAELT {Semester: ['WS']}]-> (v);
 ```
 
-![](/images/neo4j5.png)
+![](../images/neo4j5.png)
 
 ### Aufgabe 2
 a) *Änderung: Welche AIN-Professoren halten im SS welche MSI Vorlesungen?*
@@ -224,7 +224,7 @@ WHERE ANY (x in r.Semester WHERE x = "SS")
 RETURN ainProf, v
 ```
 
-![](/images/neo4j6.png)
+![](../images/neo4j6.png)
 
 b) *Änderung: Welche AIN-Professoren halten im WS mehr als eine MSI Vorlesung mit mind. 5 ECTS?*
 
