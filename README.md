@@ -1,7 +1,7 @@
 # 0 Übungen
 
 [Übung 1](/tasks/task_01.md)
-
+[Übung 2](/tasks/task_02.md)
 ---
 
 # 1 NoSQL - Einführung
