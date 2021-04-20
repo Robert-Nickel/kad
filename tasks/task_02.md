@@ -232,7 +232,7 @@ b) *Änderung: Welche AIN-Professoren halten im WS mehr als eine MSI Vorlesung m
 MATCH (ainProf:Professor)-[:ZUGEORDNET]-(:Studiengang {Kuerzel:'AIN'})
 MATCH (v:Vorlesung)-[:ENTHALTEN]->(:Studiengang{Kuerzel: 'MSI'})
 MATCH (ainProf)-[r:HAELT]-(v)
-WHERE ANY (x in r.Semester WHERE x = "WS")
+WHERE "WS" IN r.Semester
 AND (v.ECTS > 4)
 WITH ainProf, COUNT(v) AS c
 WHERE (c > 1)
@@ -243,6 +243,50 @@ c)
 
 ```
 MATCH (s1:Studiengang) <- [:ZUGEORDNET] - (p:Professor) - [:HAELT] -> (v:Vorlesung) - [:ENTHALTEN] -> (s2:Studiengang)
-WHERE s1.Kuerzel <> s2.Kuerzel
+WHERE s1 <> s2
 RETURN p.Name AS Professor, s1.Kuerzel AS Studiengang, v.Titel AS Titel, s2.Kuerzel AS Kürzel
+```
+
+### Aufgabe 3
+
+a)
+
+```
+MATCH((director:Person) - [:DIRECTED] -> (m:Movie) <- [:ACTED_IN] - (hanks:Person {name:"Tom Hanks"}))  return director, count() AS Anzahl 
+ORDER BY Anzahl DESC
+LIMIT 3
+```
+
+b)
+
+```
+MATCH(director:Person) - [:DIRECTED] -> (:Movie) <- [:ACTED_IN] - (actor:Person)
+WHERE director <> actor
+MERGE (director) - [:KNOWS] - (actor);
+MATCH(actor1:Person) - [:ACTED_IN] -> (:Movie) <- [:ACTED_IN] - (actor2:Person)
+WHERE actor1 <> actor2
+MERGE (actor1) - [:KNOWS] - (actor2)
+return actor1, actor2
+```
+
+```
+MATCH ((p1:Person) - [k:KNOWS] -> (p2:Person))
+return count()
+```
+
+c)
+
+```
+MATCH(fof:Person) - [:KNOWS] - (f:Person) - [:KNOWS] - (keanu:Person {name: "Keanu Reeves"})
+WHERE NOT (fof) - [:KNOWS] - (keanu)
+WHERE fof <> keanu
+return distinct fof.name AS FriendOfFriendOfKeanu
+```
+
+d)
+
+```
+MATCH (keanu:Person{name:"Keanu Reeves"}), (kevin:Person{name:"Kevin Bacon"}),
+p = shortestPath((keanu) -[:ACTED_IN*] - (kevin))
+return p, length(p)/2
 ```
