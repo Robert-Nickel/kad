@@ -241,18 +241,8 @@ RETURN ainProf
 
 c)
 
-// WiP
-
 ```
-MATCH (p:Professor {Name: 'Boger'})-[:ZUGEORDNET]-(s:Studiengang)
-MATCH (p)-[:HAELT]-(v:Vorlesung)
-MATCH (vInS:Vorlesung) -[:ENTHALTEN]->(s)
-WHERE ANY (NOT v IN vInS)
-return vInS
-
+MATCH (s1:Studiengang) <- [:ZUGEORDNET] - (p:Professor) - [:HAELT] -> (v:Vorlesung) - [:ENTHALTEN] -> (s2:Studiengang)
+WHERE s1.Kuerzel <> s2.Kuerzel
+RETURN p.Name AS Professor, s1.Kuerzel AS Studiengang, v.Titel AS Titel, s2.Kuerzel AS Kürzel
 ```
-
-vInS = Vorlesungen in AIN
-v (IT-Leadership, Reactive Systems) Teil von vInS ? false : true
-
-Alle Profs ausgeben, wo mind 1 Eintrag von v nicht in vInS
