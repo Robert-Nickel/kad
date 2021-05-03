@@ -42,7 +42,7 @@ JSON
 
 Datenbankmodell
 
-![](/images/mongo1.png)
+![](/kad/images/mongo1.png)
 
 - Database: Menge von Collections
 - Collection: Sammlung ähnlicher Documents (bestehend aus Key/Value Paaren), ähnlich wie table
@@ -470,7 +470,7 @@ Secondary Node
 - Falls Primary Node ausfällt, wählen die Secondary Nodes einen neuen Primary Node
 - Lesevorgang: Änderungen können je nach mode auch von Secondary Nodes gelesen werden
 
-![](/images/mongo2.png)
+![](/kad/images/mongo2.png)
 
 Lesevorgang bei Replica Sets
 - Verwendung von Read Preference Modes
@@ -494,7 +494,7 @@ Lesevorgang bei Replica Sets
     - Primary und Secondaries gleichmaßen bewertet 
 
 Ausfall Primary
-![](/images/mongo3.png)
+![](/kad/images/mongo3.png)
 Wenn heartbeat von Primary aussetzt, wählen die Secondaries neuen Primary
 
 Schreibvorgang Replica Sets
@@ -514,7 +514,7 @@ db.products.insert(
 )
 ```
 
-![](/images/mongo4.png)
+![](/kad/images/mongo4.png)
 Quelle: docs.mongodb.org
 
 ## Sharding Cluster
@@ -530,7 +530,7 @@ Automatisches horizontales Skalieren
 - Sobald ein Chunk eine bestimmte Größe erreicht, wird er aufgeteilt
 - Speicherung von Chunks auf Server, genannt Shards
 
-![](/images/mongo5.png)
+![](/kad/images/mongo5.png)
 
 Shard Key
 - Feld, aufgrund dessen Daten aufgeteilt werden
@@ -540,7 +540,7 @@ Shard Key
   - Kein Array
   - Ziel: möglichst hohe Kardinalität (möglichst viele verschiedene mögliche Werte)
 
-![](/images/mongo6.png)
+![](/kad/images/mongo6.png)
 
 - Jeder Shard und Config Server hat ein Replica Set dahinter
 - Auch Router sollten repliziert sein

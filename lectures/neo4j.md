@@ -5,7 +5,7 @@ Abstraktion als Graphen
 - Soziale Netzwerke
   - "Gib mir alle Personen, die meinen Freunden befreundet sind und mit denen ich noch nicht befreundet bin."
 
-![](/images/graph1.png)
+![](/kad/images/graph1.png)
 
 Quelle: I. Robinson: Graph Databases
 
@@ -18,7 +18,7 @@ Quelle: I. Robinson: Graph Databases
 Neo4j vs. RDBMS
 Wie werden Graphen in RDBMS gespeichert?
 
-![](/images/graph2.png)
+![](/kad/images/graph2.png)
 
 reflexive Relation mit n zu m Beziehung
 
@@ -54,7 +54,7 @@ Quelle: I. Robinson: Graph Databases
 
 Zugriff über Cypher oder über Traverser API oder Core API (bei komplexeren Dingen)
 
-![](/images/graph3.png)
+![](/kad/images/graph3.png)
 
 Quelle: I. Robinson: Graph Databases
 

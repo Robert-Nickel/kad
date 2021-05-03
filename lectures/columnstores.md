@@ -23,17 +23,17 @@
 
 Datenbanktabelle:
 
-![](/images/column1.png)
+![](/kad/images/column1.png)
 
 Zeilenweises Speichern:
 
 Block 1 / Seite 1
 
-![](/images/column2.png)
+![](/kad/images/column2.png)
 
 Block 2 / Seite 2
 
-![](/images/column3.png)
+![](/kad/images/column3.png)
 
 - Daten werden in einheitlichen Blöcke zusammengefasst
 - Lesen eines Werts: In welchen Block ist der Wert?
@@ -47,20 +47,20 @@ Zeilenorientierte Abboldung von Sätzen
 - Eingebettete Längenfelder
 - Problem: Wenn z.B. das 5. Attribut gesucht wird, muss man die ganze Kette durchgehen wegen variablen Längen
 
-![](/images/column4.png)
+![](/kad/images/column4.png)
 
 - Eingebettete Längenfelder mit Zeiger
   - Attribute mit variabler Länge werden nach hinten geschoben
   - Direkte Berechnung der satzinternen Adresse möglich
   - Verweis durch "Stellvertreter-TID" (mit fester Länge)
 
-![](/images/column5.png)
+![](/kad/images/column5.png)
 
 Spaltenweises Speichern:
 
-![](/images/column6.png)
+![](/kad/images/column6.png)
 
-![](/images/column7.png)
+![](/kad/images/column7.png)
 
 Jede Spalte (auch Projektion) kriegt seinen eigenen Block (oder mehrere Blöcke, wenn die Spalte entsprechend lang ist)
 
@@ -118,7 +118,7 @@ Zwischenform: PAX Modell
 - Tupel werden in Block/Seite zusammengelassen (Zeilenorientiertes Speichern), die Seite wird aber wiederrum in Subpages (CPU-Cachelines) unterteilt, über die dann spaltenorientiert gespeichert wird. 
 - akademisch interessant, hat sich aber noch nicht durchgesetzt
 
-![](/images/column8.png)
+![](/kad/images/column8.png)
 
 Vergleich: Row Store vs Column Store
 Attribut hinzufügen:
@@ -150,7 +150,7 @@ Auslesen vielen Datensätze:
 - CS: Nur Lesen der Dateien der relevanten Spalten
 
 Hybrider Ansatz
-![](/images/column9.png)
+![](/kad/images/column9.png)
 
 Linke Seite
 - Zeilenorientiertes ablegen relationaler Daten
