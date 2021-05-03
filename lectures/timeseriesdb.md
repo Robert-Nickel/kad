@@ -1,0 +1,31 @@
+# 4 Time series databases
+- = Zeitreihendatenbank
+- geeignet für Messwerte, die zu bestimmten Zeitpunkten gehören, z.B. Messwerte von IOT Daten, autonomen Autos etc.
+- Protokollierung von Ereignissen zur Erkennung von Mustern, Trends etc
+- Zeile als "Measurement"
+- Ähnelt einem Logbuch mit Zeitstempel und Ereignis
+- Append-only mit Chronologie
+- Änderungen/Löschung teilweise auch möglich, aber nicht darauf optimiert
+- InfluxDB eine der bekanntesten TSDB
+- Abfragesprache SQL ähnlich
+- Zeitstempel immer vorhanden, Standard RFC3339
+- Field bestehen aus Key & Value, vergleichbar mit Spalte (Field key = Spaltenname, Field value = Zelleneintrag)
+- Field set: Field keys und field values zusammen => Das worüber man zu statistischen Zwecken aggregiert
+- Tags, bestehen aus Key & Value, vergleichbar mit Spalte (Tagkey = Spaltenname, Tagvalue = Zelleneintrag)
+- Tag set: Alle Kombinationsmöglichkeiten der Tags
+- Tags werden indexiert, Fields nicht. Dadurch sind Suchen nach tags effizienter als Suchen nach Fields.
+- Vergleich: Tags sind ein bisschen wie enums, während Fields eher ints/strings etc sind
+- Schemaloses Design für das Hinzufügen des ersten Measurements
+- Danach wird der Datentyp beibehalten wie durch die erste Zeile definiert
+- Verwendung REST HTTP API
+  - für Queries
+  - für Datenimports aus Files
+- Erzugung: `CREATE DATABASE mydb`
+- Insert: `INSERT census location=1, scientist=me, butterflies=12, honeybees=23`
+- Wenn Timestamp fehlt wird die aktuelle Serverzeit genommen
+- Retention Policy: Wie lange sollen die Daten gespeichert werden sollen
+- Suche: SQL ähnlich (SELECT, FROM, WHERE, GROUP_BY)
+- Spezial: `GROUP BY time(8s) FILL(linear)` -> Gruppiert in 8 Minuten Blöcke, interpoliert linear falls Werte fehlen
+- Andere Interpolationsmöglichkeiten: none, linear, null, previous
+- Abgrenzung zu Complex Event Processing:
+- Kontinuierlicher Datenstrom bei CEP, der kontinuierlich ausgewertet wird

@@ -8,3 +8,4 @@
 1. [NoSQL](/lectures/nosql.md)
 2. [MongoDB](/lectures/mongodb.md)
 3. [Neo4j](/lectures/neo4j.md)
+4. [Time Series DB](lectures/timeseriesdb.md)
