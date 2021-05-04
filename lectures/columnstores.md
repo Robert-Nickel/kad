@@ -491,3 +491,112 @@ Join-Operationen
 - Spezielle Join-Algorithmen
   - Invisible Join: optimiert für Data Warehouses mit Star Schema
   - FlashJoin
+    - späte Materialisierung und dadurch sinnvoll
+
+## Hauptspeicherdatenbanken
+- IMDB (in memory) bzw. MMDB (main memory)
+- schnelle Zugriffszeiten
+- Datengröße wächst langsamer als RAM wächst
+- __Hauptspeicherdatenbanken sind keine normalen Datenbanken mit viel RAM.__
+
+### Speicherhierarchie
+
+![](/kad/images/column10.png)
+
+Quelle: Informatik Spektrum 2010, Band 33 Heft 1
+
+=> Je weiter unten, desto mehr Daten, aber auch desto langsamer
+
+=> Je weiter oben, desto weniger Daten, aber auch desto schneller
+
+![](/kad/images/column11.png)
+
+Quelle: SAP.com
+
+- Spezielle Indexstrukturen (schnell die richtige Seite im Hauptspeicher finden)
+- Mehrbenutzersynchronisation
+  - Viel Verwaltungsaufwand für viele User
+    - Viele kleine Sperren auf kleine DB Objekte
+    - dadurch mehr Parallelität möglich
+  - Für Zugriffe weniger Zeit benötigt
+    - Parallelitätsgrad kann eingeschränkt werden
+- Logging
+  - benötigt z.B. für Rollbacks
+  - WAL (Write-ahead-logging) verlangt Protokollierung auf Festplatte
+  - Verarbeitung einer ganzen Gruppe von Transaktionen mit 'group commit' 
+- Kompaktifizierung der Datenbank
+- Working set
+  - Aktiver Teil der Datenbank wird im Hauptspeicher gehalten
+  - Nur ein Bruchteil der Gesamtdaten
+  - Beispiel: Bei Verkaufsdatenbank sind nur aktuelle Verkäufe relevant, ältere Verkäufe sind analytisch noch interessant, relational aber nicht mehr
+  - Heiße Daten (im Gegensatz zu kalten Daten, auch mehr Abstufungen sind möglich)
+  
+  ![](/kad/images/column12.png)
+
+  Quelle: Kemper: Datenbanksysteme
+
+  Beispiel: SAP HANA als in-memory column-based data store
+
+## Wide Column Stores
+- Weiterentwicklung der Eigenschaften von Column Stores
+- Nicht-relationale/NoSQL Systeme, nicht nur Variante der Relationalen
+- Neue Spalten können leicht hinzugefügt werden => flexibles Datenschema
+- "Extensible Record Stores"
+- "Column Family" statt "Tabelle"
+- Beispiel: Cassandra
+  - Spaltenorientiert
+  - Skalierbar, ausfallsicher
+  - Verteilung, Replikation
+  - eigene Query Sprache (CQL), ähnlich zu SQL
+- Key Space
+  - Container für Daten (bzw. einfach Datenbank)
+  - Replication Factor: Anzahl der Kopien im Cluster
+- Column Family
+  - Container für sortierte Collection von Rows
+  - Row Key zur Identifikation einer Row
+  - Speicherung von Column Name, Value und Timestamp
+  - ähnlich Tabelle in rel. DB
+  - Ohne feste Zuordnung von Attributen
+
+![](/kad/images/column13.png)
+
+Beispiel:
+
+```CQL
+create keyspace WildWest
+use WildWest;
+create column family Users;
+create column family Horses;
+```
+
+```CQL
+Keyspace WildWest
+  Users:
+    Jim = { reactivity: "2" }
+    Joe = { reactivity: "9", nick_name: "Little Joe" }
+  Horses:
+    Kelly = { color: "white", owner: "Jim" }
+```
+
+- Super Column
+  - bestehen aus key value Paaren, deren Werte Columns sind
+  - Menge von Subcolumns
+  - Nicht nur flaches Objekt, sondern Struktur
+  - Nur eine Vertiefungsebene möglich (nicht wie bei MongoDB beliebig)
+
+```CQL
+create column family Duels with column_type = 'Super';
+...
+
+Duels:
+  high_noon = {
+    result : { player_1: "Jim", player_2: "Joe", winner: "Joe" }
+    position: { x: "13", "y": "21", desc: "Main Street" }
+  }
+```
+
+Quelle: Edlich: NoSQL
+
+- Leichte Erweiterungen des Datenmodells
+- Map/Reduce ähnliche Berechnungen über Cassandra-Hadoop-Integration
+- Einstellbare Konsistenz (für CAP Theorem)
