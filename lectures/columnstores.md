@@ -152,6 +152,8 @@ Auslesen vielen Datensätze:
 Hybrider Ansatz
 ![](/kad/images/column9.png)
 
+Quelle: Schaffner 2008
+
 Linke Seite
 - Zeilenorientiertes ablegen relationaler Daten
 - schneller Zugriff auf Tupel
@@ -362,3 +364,130 @@ Anderes Beispiel:
 Vorteil spaltenorientierter Speicherung: Jede Spalte kann anders komprimiert werden. => besser als Zeilenorientiert 
 
 ## Anfragebearbeitung
+Zeilenbasierte Suchverfahren, Join-Algorithmen etc funktionieren nicht, eigene nötig
+
+Materialisierung = Rekonstruktion der Tupel durch selektierte Attribute
+
+### Early Materialisierung
+- Dekomprimierung nötig
+- Teilweise unnötige Tupel konstruiert
+- Wiederverwendung Anfrage-Optimizer zeilenbasierter Systeme
+- Nachteil: Vorteile der Komprimierung wird frühzeitig eingebüßt
+
+### Late Materialisierung
+- Vermeidung der Tupelrekonstruktion so lange wie möglich
+- Bit-Vektoren als Zwischenergebnisse
+- Beispiel: Auf diese Tabelle BSEG...
+
+| gjahr | bukrs | kunnr | dmbtr |
+| ----- | ----- | ----- | ----- |
+| 4     | 2     | 2     | 7     |
+| 4     | 1     | 3     | 13    |
+| 4     | 3     | 3     | 42    |
+| 4     | 1     | 3     | 80    |
+
+...soll diese Query ausgeführt werden:
+
+```sql
+SELECT kunnr, sum(dmbtr)
+FROM BSEG
+WHERE gjahr = 4
+AND bukrs = 1
+GROUP BY kunnr
+```
+
+Die Daten sind physisch in Spalten gespeichert.
+Die Spalte gjahr ist lauflängenkodiert mit `(4,1,4)` (also eine 4 von Zeile 1 bis Zeile 4)
+Die Spalte bukrs ist nicht komprimiert.
+
+⬇️ Dekomprimierung
+
+| gjahr |
+| ----- |
+| 4     |
+| 4     |
+| 4     |
+| 4     |
+
+und
+
+| bukrs |
+| ----- |
+| 2     |
+| 1     |
+| 3     |
+| 1     |
+
+⬇️ Bit-Vektoren Kodierung der Bedingungen (`gjahr = 4` und `bukrs = 1`)
+
+| gjahr |
+| ----- |
+| 1     |
+| 1     |
+| 1     |
+| 1     |
+
+und
+
+| bukrs |
+| ----- |
+| 0     |
+| 1     |
+| 0     |
+| 1     |
+
+⬇️ AND Verknüpfung
+
+| AND |
+| --- |
+| 0   |
+| 1   |
+| 0   |
+| 1   |
+
+Aussage: Nur das 2. und 4. Element relevant.
+
+⬇️ Streichen der irrelevanten Daten aus den Spalten
+
+| kunnr |
+| ----- |
+| ~~2~~ |
+| 3     |
+| ~~3~~ |
+| 3     |
+
+| dmbtr  |
+| ------ |
+| ~~7~~  |
+| 13     |
+| ~~42~~ |
+| 80     |
+
+⬇️ SELECT und GROUP BY
+
+| kunnr |
+| ----- |
+| 3     |
+| 3     |
+
+| sum(dmbtr) |
+| ---------- |
+| 13         |
+| 80         |
+
+⬇️ Aggregation durch group by und sum
+
+| kunnr | dmbtr |
+| ----- | ----- |
+| 3     | 93    |
+
+Durch späte Materialisierung hatte Spaltenorientiertheit großen Vorteil.
+
+Join-Operationen
+- Verwendung klassischer Verfahren
+  - Nested-Loop-Join
+  - Hash-Join
+  - Merge-Join: besonders geegnet, wenn Spalten bereits in richtiger Sortierreihenfolge vorliegen
+- Spezielle Join-Algorithmen
+  - Invisible Join: optimiert für Data Warehouses mit Star Schema
+  - FlashJoin
