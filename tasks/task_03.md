@@ -27,20 +27,62 @@ FROM patienten p,
 
 ### Aufgabe 3
 
-```sql
+```
+<result>
+  {
+    for $country in db:open('factbook')//country
+    where $country/@total_area > 100000
 
+    for $city in $country//city
+    where $city/@id = $country/@capital
+
+    order by $country
+
+    return
+      <country>
+        <name>{ $country/@name[1] }</name>
+        <capital>{ $city/name/text() }</capital>
+      </country>
+  }
+</result>
 ```
 
 ### Aufgabe 4
 
-```sql
+```
+<result>
+  {
+    for $river in db:open('factbook')//river
+    where $river/@name="Amazonas"
 
+    for $located in $river/located
+    
+    for $country in //country
+    where $country/@id = $located/@country
+    
+    return $country/name[1]
+  }
+</result>
 ```
 
 ### Aufgabe 5
 
-```sql
-
+```
+<neighbors>
+  {
+    for $country in db:open('factbook')//country
+    where $country/name[1] = "Germany"
+    
+    for $border in $country//border
+    
+    for $country2 in //country
+    where $country2/@id = $border/@country
+    
+    order by $country2/name[1]
+    
+    return $country2/name[1]
+  }
+</neighbors>
 ```
 
 
