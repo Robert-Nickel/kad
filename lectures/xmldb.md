@@ -291,3 +291,36 @@ Quelle: Türker
 Hybride Speicherung
 
 ![](/kad/images/xml3.png)
+
+SQL/XML und SQL/JSON ähnelt sich stark.
+
+## Native XML-Datenbanken
+- Nativ = XML in Reinform
+- Revolutionär statt Evolutionär
+- Unterstützung Dokumenten- und Datensicht
+- Verarbeiten von XML-spezifischen Anfragesprachen XQuery und XPath
+- keine SQL Unterstützung
+- Nur vorteilhaft, wenn reine XML Daten gespeichert werden
+- Speicherungsform als reine Textform oder Binärform (z.B. DOM)
+- baseX an Uni Konstanz entwickelt
+
+
+XQuery FLWOR (for, let, where, order by/group by, return)
+- for: `for $zahl in $zahlen ...`
+- let: `let $zahlen := (1,2,3,4,5,6,7) ...`
+- where: `where $zahl > 8`
+- order by: `order by $zahl descending`
+- return: `return $zahl`
+
+XML Datentypen (z.B. für order by)
+- xs:string
+- xs:decimal
+- xs:integer
+- xs:float
+- xs:boolean
+- xs:date
+- xs:time
+
+Beispiel: `order by xs:decimal($article/price) descending`
+
+
