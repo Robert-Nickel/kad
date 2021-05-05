@@ -248,3 +248,46 @@ SELECT purchasedate, XMLQuery(
 AS customer 
 FROM purchaseorder;
 ```
+
+### XML SQL Utility
+- Ausgabe von DB-inhalten als XML-Dokumente (als neutrales Austauchformat zw. DB-Systemen)
+- Native Speicherung von XML als XML-Type
+- Strukturierte Abbildung von Inhalten aus XML-Dokumenten in Relationen und Attribute
+
+### Speicherungstechniken
+- Textbasierte, opake Speicherung als Zeichenkette
+  - Dokument wird nicht verändert
+  - Vorteil: Dokument schnell als XML verfügbar
+  - Suche ist aufwendiger
+    - Generierung von Indizes über Inhalte und Struktur des XML-Dokuments
+    - Verwendung von Konzepten des Information Retrieval
+    - Aufwändiges Parsen der Zeichenkette beim Zugriff
+  - Einsatz: Dokumentzentrierte und semistrukturelle XML-Anwendungen
+- Strukturbasierte Speicherung durch Abbildung von XML-Strukturen auf relationale Strukturen
+  - Ableiten des DB-Schemas aus XML Struktur
+  - Zerlegung von XML in Tabelle und Spalten (shredding)
+  - Erzeugung von XML-Dokumenten (wrapping)
+  - Reihenfolgen von Elementen innerhalb des Dokuments gehen verloren
+  - Beispiel:
+
+![](/kad/images/xml1.png)
+
+Quelle: Türker
+
+- Modellbasierte Speicherung
+  - Generische Speicherung der Graphstruktur von XML
+  - Verwendung des DOM (Document Object Model)
+  - API über Klassen Node, Element und Attribute, mit denen man den Baum traversieren kann
+  - Vollständige Wiederherstellung inkl. Reihenfolge beibehalten
+  - Umsetzung von XML-Anfragen intern als SQL-Anfrage
+  - Dokumentrekonstruktion ist sehr aufwändig (siehe Bild)
+  - Einsatz: Daten- und dokumentzentrierte, sowie semistrukturierte XML-Anwendungen
+  - Beispiel:
+
+![](/kad/images/xml2.png)
+
+Quelle: Türker
+
+Hybride Speicherung
+
+![](/kad/images/xml3.png)
