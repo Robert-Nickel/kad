@@ -1,4 +1,4 @@
-# Column Stores
+# 5 Column Stores
 ## Einführung
 - = Spaltenorientierte Datenbank
 - aka Column Database

@@ -1,4 +1,4 @@
-# XML-Datenbanken
+# 6 XML-Datenbanken
 
 - XML-enabled Datenbanksysteme
   - Erweiterung bestehender DB um XML features
