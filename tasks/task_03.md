@@ -80,7 +80,7 @@ FROM patienten p,
     
     order by $country2/name[1]
     
-    return $country2/name[1]
+    return <country>{$country2/name[1]/string()}</country>
   }
 </neighbors>
 ```
