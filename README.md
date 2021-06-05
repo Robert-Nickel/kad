@@ -12,4 +12,6 @@
 4. [Time Series DB](/lectures/timeseriesdb.md)
 5. [Column Stores](/lectures/columnstores.md)
 6. [XML Datenbanken](/lectures/xmldb.md)
-7. [NoSQL Speicherstrukturen](/lecture/storage_structure.md)
+7. [NoSQL Speicherstrukturen](/lectures/storage_structure.md)
+8. [Implementierung RDBMS](/lectures/implementation_rdbms.md)
+9. [Puffer management](/lectures/puffer_management.md)

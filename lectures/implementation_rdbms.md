@@ -65,3 +65,26 @@ Blöcke werden nicht voll gemacht, sondern etwas Platz für Updates gelassen
 - PCTUSED = Ab wieviel Prozent wird ein Block wieder geöffnet, nachdem er zu gemacht wurde (z.B. wenn durch Löschungen wieder was frei wird)
 
 Wenn man jetzt ein System hat, das nie Updates macht (z.B. Timeseries DBs), dann kann man die Blöcke viel voller machen und entsprechend Speicherplatz und Ladezeit sparen (da ich weniger Blöcke laden muss)!
+
+## Blockzuordnung
+- Zuordnung von Blöcken innerhalb von Dateien zu physischen Adressen
+- Blockzurodnungsverfahren:
+  - Statische Dateizuordnung
+    - Fortlaufende Speicherung von Blöcken in zusammenhängendem Speicherbereich
+    - Relative Adresse lässt sich wegen fester Blocklänge leicht berechnen => Sequentielle Dateiverarbeitung einfach
+    - Reservierung des gesamten Speicherbereichs einer Datei bei CREATE notwendig
+    - Kein dynamishes Wachstum
+  - Dynamische Blockzuordnung 
+    - Zuordnung von Speicherplatz bei Erzeugung von Blöcken
+    - Adressierung eines Blocks in einer Blocktabelle
+    - Maximale Flexibilität
+    - Leere Blöcke verbrauchen keinen Platz
+    - Physische Clusterbildung auf Blockebene nicht möglich
+    - Blocktabelle selbst ist auf Blocks aufgeteilt
+  - Dynamische Extent-Zuordnung
+    - Kompromiss aus beiden
+    - Verwendung von Extent-Tabelle zum Ablegen der Startadresse und Anzahl der Blöcke pro Extent
+    - Zuordnung von Extents zu Dateien durch DB-Administrator
+    - Dynamisches Wachstum
+    - Je kleiner ein Extent, desto mehr ist es Blockzuordnung (=je größer, desto statischer)
+
