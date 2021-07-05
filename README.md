@@ -14,4 +14,4 @@
 6. [XML Datenbanken](/lectures/xmldb.md)
 7. [NoSQL Speicherstrukturen](/lectures/storage_structure.md)
 8. [Implementierung RDBMS](/lectures/implementation_rdbms.md)
-9. [Puffer management](/lectures/puffer_management.md)
+9. [Anfragebearbeitung und Optimierung](/lectures/query_processing_and_optimization.md) 
